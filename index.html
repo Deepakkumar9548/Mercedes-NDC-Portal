@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Business-Workflow NDC—Portal India</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     TOP BAR
+══════════════════════════════════════ -->
+<div class="topbar">
+  <div class="tb-brand">
+    <div class="tb-star">✦</div>
+    <div>
+      <div class="tb-name">No Dues Certificate cum Customer Confirmation</div>
+      <div class="tb-sub">Business-Workflow NDC-Portal India Pvt. Ltd.</div>
+    </div>
+  </div>
+  <div class="tb-meta">
+    <div class="tb-field"><label>Dealer / Franchise Name</label><input id="hdr-dealer" placeholder="Franchise Partner Name"></div>
+    <div class="tb-field"><label>Customer Reference No.</label><input id="hdr-ref" placeholder="Auto / Manual"></div>
+  </div>
+  <div class="tb-right">
+    <button class="btn btn-ghost" id="btn-rec-nav" onclick="switchView('records')">☰ All Records</button>
+    <button class="btn btn-ghost hidden" id="btn-form-nav" onclick="newForm()">+ New NDC Form</button>
+    <button class="btn btn-dark" id="btn-draft" onclick="saveForm('draft')">💾 Save Draft</button>
+    <button class="btn btn-gold" id="btn-submit" onclick="saveForm('submitted')">✓ Submit</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     FORM VIEW
+══════════════════════════════════════ -->
+<div class="view active" id="view-form">
+
+  <!-- Section navigator pills -->
+  <div class="subnav" id="subnav">
+    <div class="snav-item active" data-target="1" onclick="scrollSec(1)"><div class="snav-badge">1</div>Customer Details</div>
+    <div class="snav-item" data-target="2" onclick="scrollSec(2)"><div class="snav-badge">2</div>Vehicle Details</div>
+    <div class="snav-item" data-target="3" onclick="scrollSec(3)"><div class="snav-badge">3</div>Exchange Vehicle</div>
+    <div class="snav-item" data-target="4" onclick="scrollSec(4)"><div class="snav-badge">4</div>Finance Details</div>
+    <div class="snav-item" data-target="5" onclick="scrollSec(5)"><div class="snav-badge">5</div>Billing Details</div>
+    <div class="snav-item" data-target="6" onclick="scrollSec(6)"><div class="snav-badge">6</div>Payment Details</div>
+  </div>
+
+  <div class="wrap">
+    <div id="alert-box"></div>
+    <div class="form-hdr">
+      <h1>No Dues Certificate cum Customer Confirmation</h1>
+      <p>Complete all sections accurately before submission — all calculations auto-update in real time</p>
+    </div>
+
+    <!-- ─── SECTION 1: CUSTOMER DETAILS ─── -->
+    <div class="section" id="sec-1" data-sec="1">
+      <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sh-l"><div class="sec-num">1</div><div class="sec-title">Customer Details</div></div>
+        <div class="sec-chev">▾</div>
+      </div>
+      <div class="sec-body">
+        <div class="fg">
+          <div class="fgrp" id="fld-customer_name">
+            <label class="flbl req">Customer Name</label>
+            <input class="finp" data-k="customer_name" placeholder="Full name as per ID proof" oninput="onField(this)">
+            <span class="err">Customer name is required</span>
+          </div>
+          <div class="fgrp" id="fld-mobile_no">
+            <label class="flbl req">Mobile No.</label>
+            <input class="finp" data-k="mobile_no" maxlength="10" placeholder="10-digit mobile number" oninput="onField(this)">
+            <span class="err">Enter a valid 10-digit mobile (6–9 start)</span>
+          </div>
+          <div class="fgrp" id="fld-email_id">
+            <label class="flbl">Email ID</label>
+            <input class="finp" type="email" data-k="email_id" placeholder="name@example.com" oninput="onField(this)">
+            <span class="err">Enter a valid email address</span>
+          </div>
+          <div class="fgrp" id="fld-customer_type">
+            <label class="flbl req">Type of Customer</label>
+            <select class="finp" data-k="customer_type" onchange="onField(this);onCustomerType(this)">
+              <option value="">— Select —</option>
+              <option>Corporate</option><option>Individual</option><option>CSD</option><option>Leasing</option>
+            </select>
+            <span class="err">Type of Customer is required</span>
+          </div>
+
+          <div class="fgrp" id="fld-aadhaar_no">
+            <label class="flbl">Aadhaar No.</label>
+            <input class="finp" data-k="aadhaar_no" maxlength="12" placeholder="12-digit Aadhaar" oninput="onField(this)">
+            <span class="err">Aadhaar must be exactly 12 digits</span>
+          </div>
+          <div class="fgrp" id="fld-pan_no">
+            <label class="flbl">PAN No.</label>
+            <input class="finp" data-k="pan_no" maxlength="10" placeholder="e.g. ABCDE1234F" style="text-transform:uppercase;letter-spacing:.5px" oninput="onField(this)">
+            <span class="err">Enter a valid 10-character PAN (e.g. ABCDE1234F)</span>
+          </div>
+          <div class="fgrp hidden" id="fld-gst_no">
+            <label class="flbl">GST No.</label>
+            <input class="finp" data-k="gst_no" maxlength="15" placeholder="15-character GSTIN" style="text-transform:uppercase;letter-spacing:.5px" oninput="onField(this)">
+            <span class="err">Enter a valid 15-character GSTIN</span>
+          </div>
+          <div class="fgrp span2">
+            <label class="flbl">Address</label>
+            <textarea class="finp" rows="2" data-k="address" oninput="onField(this)" placeholder="Customer's complete address"></textarea>
+          </div>
+          <div class="fgrp" id="fld-sc_name">
+            <label class="flbl">SC Name</label>
+            <input class="finp" data-k="sc_name" placeholder="e.g. John Smith" oninput="onField(this)" pattern="[A-Za-z0-9 ]*">
+            <div class="fhint">Alphanumeric characters only</div>
+          </div>
+          <div class="fgrp" id="fld-sc_number">
+            <label class="flbl">SC Number</label>
+            <input class="finp" data-k="sc_number" placeholder="e.g. SC001234" oninput="onField(this)">
+          </div>
+
+          <div class="fgrp" id="fld-sales_transaction_no">
+            <label class="flbl req">DMS No.</label>
+            <input class="finp"  placeholder="DMS / System Transaction ID" oninput="onField(this)"><!-- data-k="sales_transaction_no" -->
+            <span class="err">DMS no. is required</span>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Booking Date</label>
+            <input class="finp" type="date" data-k="booking_date" oninput="onField(this)">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Delivery Date</label>
+            <input class="finp" type="date" data-k="delivery_date" oninput="onField(this)">
+          </div>
+
+          <div class="fgrp">
+            <label class="flbl">Deal Source</label>
+            <select class="finp" data-k="deal_source" onchange="onField(this)">
+              <option value="">— Select —</option>
+              <option>Inhouse</option><option>DSA</option>
+            </select>
+          </div>
+          
+          <div class="fgrp">
+            <label class="flbl">Delivery Type</label>
+            <select class="finp" data-k="delivery_type" onchange="onField(this)">
+              <option value="">— Select —</option>
+              <option>Home Delivery</option><option>Showroom Delivery</option>
+            </select>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Franchise Partner / Dealership</label>
+            <input class="finp" data-k="dealership_name" placeholder="Franchise Partner / Dealership name" oninput="onField(this)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 2: VEHICLE DETAILS ─── -->
+    <div class="section" id="sec-2" data-sec="2">
+      <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sh-l"><div class="sec-num">2</div><div class="sec-title">Vehicle Details</div></div>
+        <div class="sec-chev">▾</div>
+      </div>
+      <div class="sec-body">
+        <div class="fg">
+          <div class="fgrp" id="fld-model">
+            <label class="flbl req">Model</label>
+            <input class="finp" data-k="model" placeholder="e.g. E-Class, GLC 300, S 400d" oninput="onField(this)">
+            <span class="err">Model is required</span>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Model Year</label>
+            <input class="finp" type="number" data-k="model_year" min="2000" max="2099" placeholder="e.g. 2024" oninput="onField(this)">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Variant</label>
+            <input class="finp" data-k="variant" placeholder="e.g. Progressive Line, AMG Line" oninput="onField(this)">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Colour</label>
+            <input class="finp" data-k="colour" placeholder="e.g. Obsidian Black Metallic" oninput="onField(this)">
+          </div>
+
+          <div class="fgrp" id="fld-vin_number">
+            <label class="flbl req">Chassis Number</label>
+            <input class="finp" data-k="vin_number" maxlength="17" placeholder="17-character VIN" oninput="onField(this)" style="text-transform:uppercase;letter-spacing:.5px">
+            <span class="err">Chassis Number must be exactly 17 characters</span>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Registration Number</label>
+            <input class="finp" data-k="registration_number" placeholder="e.g. MH01AB1234" oninput="onField(this)">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Fuel Type</label>
+            <select class="finp" data-k="fuel_type" onchange="onField(this)">
+              <option value="">— Select —</option>
+              <option>Petrol</option><option>Diesel</option><option>Electric</option><option>Hybrid</option>
+            </select>
+          </div>
+
+                <div class="fgrp">
+            <label class="flbl">Insurance Type</label>
+            <select class="finp" data-k="insurance" onchange="onField(this)">
+              <option value="">— Select —</option>
+              <option>Dealer Insurance</option><option>Customer Self-Insurance</option>
+            </select>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Finance Type <span class="tag-cond">Conditional</span></label>
+            <select class="finp" data-k="finance_type" onchange="onFinanceType(this)">
+              <option value="">— Select —</option>
+              <option>Cash Purchase</option><option>Self Finance</option><option>In-House</option><option>MBFS</option>
+            </select>
+          </div>
+
+          <div class="fgrp span3" style="margin-top:2px">
+            <label class="flbl">Exchange Vehicle Applicable? <span class="tag-cond">Triggers Section 3</span></label>
+            <div class="rg" style="margin-top:5px">
+              <label class="rl"><input type="radio" name="exchange_applicable" value="Yes" onchange="onExchangeToggle(this)"> &nbsp;Yes — Exchange vehicle involved</label>
+              <label class="rl"><input type="radio" name="exchange_applicable" value="No" onchange="onExchangeToggle(this)" checked> &nbsp;No — Direct / fresh purchase</label>
+            </div>
+            <div class="fhint" style="margin-top:4px">Selecting "Yes" will reveal Section 3 (Exchange Vehicle Details) below</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 3: EXCHANGE VEHICLE (CONDITIONAL) ─── -->
+    <div class="section hidden" id="sec-3" data-sec="3">
+      <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sh-l"><div class="sec-num">3</div><div class="sec-title">Exchange Vehicle Details</div><span class="sec-badge">Conditional — If Applicable</span></div>
+        <div class="sec-chev">▾</div>
+      </div>
+      <div class="sec-body">
+        <div class="fg">
+          <div class="fgrp">
+            <label class="flbl">Old Car Registration No.</label>
+            <input class="finp" data-k="old_car_reg_no" placeholder="e.g. DL01AB0001" oninput="onField(this)">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Exchange Make</label>
+            <input class="finp" data-k="exchange_make" placeholder="e.g. Toyota" oninput="onField(this);syncExchangeMakeModel()">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Exchange Model Year</label>
+            <input class="finp" type="number" data-k="exchange_model" placeholder="e.g. 2019" oninput="onField(this);syncExchangeMakeModel()">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Exchange Total Amount (₹)</label>
+            <input class="finp" type="number" data-k="exchange_value_considered" placeholder="0.00" oninput="onField(this);syncEvaluatedValue(this);calcExchangeTotal();calcAll()">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Refund Amount (₹)</label>
+            <input class="finp" type="number" data-k="exchange_refund_amount" placeholder="0.00" oninput="onField(this);calcExchangeTotal();calcAll()">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Total Amount (₹)</label>
+            <input class="finp calc-cell" id="exchange-total-amt" data-k="exchange_total_amount" disabled placeholder="0.00">
+          </div>
+         
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 4: FINANCE DETAILS ─── -->
+    <div class="section" id="sec-4" data-sec="4">
+      <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sh-l"><div class="sec-num">4</div><div class="sec-title">Finance Details</div><span class="sec-tag">Synced from Section 1</span></div>
+        <div class="sec-chev">▾</div>
+      </div>
+      <div class="sec-body">
+        <div class="subnote" id="finance-note">
+          <span>ℹ</span>
+          <span>Finance Type is "Cash Purchase" or not yet selected — Finance / Bank Name, Loan Amount, Tenure, and Finance Processing Fee are disabled.</span>
+        </div>
+        <div class="fg">
+          <div class="fgrp">
+            <label class="flbl">Finance Type</label>
+            <input class="finp calc-cell" data-k="finance_type_display" disabled placeholder="Synced from Section 1">
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Finance / Bank Name <span class="tag-cond">Conditional</span></label>
+            <input class="finp" id="inp-bank-s4" data-k="finance_bank_name" placeholder="Enabled when financed" oninput="onField(this)" disabled>
+          </div>
+          <div class="fgrp">
+            <label class="flbl">Finance Amount (₹) <span class="tag-cond">Conditional</span></label>
+            <input class="finp" type="number" id="inp-loan-amt" data-k="loan_amount" placeholder="0.00" oninput="onField(this)" disabled>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 5: BILLING DETAILS ─── -->
+    <div class="section" id="sec-5" data-sec="5">
+      <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sh-l"><div class="sec-num">5</div><div class="sec-title">Billing Details</div></div>
+        <div class="sec-chev">▾</div>
+      </div>
+      <div class="sec-body">
+
+        <div class="sec-div">Part A — Payable to Mercedes-Benz India Pvt. Ltd. (OEM Account)</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Billing Structure</th>
+                <th style="width:150px">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ex-showroom Price (incl. GST &amp; applicable taxes)</td>
+                <td><input type="number" data-k="ex_showroom_price" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr class="ms-selector-row">
+                <td colspan="2">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span>Less: OEM / Month Offer</span>
+                    <!-- <small style="color:var(--t3)">(Including Exchange Discount if Applicable)</small> -->
+                    <div class="ms-wrap" id="ms-wrap-oem" style="margin:0">
+                      <div class="ms-select" id="ms-select-oem" onclick="toggleMsPanel('oem')" tabindex="0">
+                        <span class="ms-ph">+ Select offer type(s)</span>
+                        <span class="ms-chevron">▾</span>
+                      </div>
+                      <div class="ms-panel" id="ms-panel-oem"></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tbody id="oem-line-rows"></tbody>
+              <tr class="row-calc">
+                <td>TCS</td>
+                <td><input type="number" step="0.01" data-k="tcs_amount" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr class="row-total">
+                <td>TOTAL PART A PAYABLE</td>
+                <td id="calc-total-a">₹0.00</td>
+              </tr>
+              <tr class="row-gap">
+                <td>Total Discount</td>
+                <td id="calc-gap-a">₹0.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sec-div" style="margin-top:20px">Part B — Payable to Dealership Account (Franchise Partner)</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Billing Structure</th>
+                <th style="width:150px">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Registration / Road Tax / Statutory Charges</td>
+                <td><input type="number" data-k="reg_road_tax" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr>
+                <td>Insurance</td>
+                <td><input type="number" data-k="insurance_amount" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr>
+                <td>Accessories</td>
+                <td><input type="number" data-k="accessories_total" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr class="ms-selector-row">
+                <td colspan="2">
+                  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+                    <span>Value Added Services</span>
+                    <small style="color:var(--t3)"></small>
+                    <div class="ms-wrap" id="ms-wrap-vas" style="margin:0">
+                      <div class="ms-select" id="ms-select-vas" onclick="toggleMsPanel('vas')" tabindex="0">
+                        <span class="ms-ph">+ Select service(s)</span>
+                        <span class="ms-chevron">▾</span>
+                      </div>
+                      <div class="ms-panel" id="ms-panel-vas"></div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tbody id="vas-line-rows"></tbody>
+              
+              <tr>
+                <td>Choice Number / Premium Number</td>
+                <td><input type="number" data-k="choice_number_amt" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr>
+                <td>Other Charges</td>
+                <td><input type="number" data-k="other_charges" placeholder="0.00" oninput="onField(this);calcAll()"></td>
+              </tr>
+              <tr class="row-total">
+                <td>TOTAL PART B PAYABLE</td>
+                <td id="calc-total-b">₹0.00</td>
+              </tr>
+                          </tbody>
+          </table>
+        </div>
+
+        <div class="grand-bar payable">
+          <div class="gl">Grand Total (A + B) Payable</div>
+          <div class="gv" id="calc-grand">₹0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── SECTION 6: PAYMENT DETAILS ─── -->
+    <div class="section" id="sec-6" data-sec="6">
+      <div class="sec-head" onclick="toggleSec(this)">
+        <div class="sh-l"><div class="sec-num">6</div><div class="sec-title">Payment Details</div></div>
+        <div class="sec-chev">▾</div>
+      </div>
+      <div class="sec-body">
+        <div class="fhint" style="margin-bottom:10px">Record the amount received against each payment mode, where applicable.</div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th>Payment Mode</th>
+                <th style="width:160px">Amount (₹)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+  Cash Amount &nbsp;
+  <span id="cash-condition-container" title="Select a condition applicable to this cash amount" style="cursor:help; display:inline-block; vertical-align:middle;">
+    
+  </span>
+</td>
+                <td style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  
+                  
+                  <input type="number" step="0.01" id="pmt-cash-amount-input" data-k="pmt_cash_amount" placeholder="0.00" oninput="onField(this);calcPmtTotal()" style="flex:1;min-width:120px" disabled>
+                </td>
+              </tr>
+              <tr>
+                <td>
+  Cheque &nbsp;
+  <span title="Select a condition applicable to this cheque amount" style="cursor:help; display:inline-block; vertical-align:middle;">
+    
+  </span>
+</td>
+                <td style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <input type="number" step="0.01" data-k="pmt_cheque" placeholder="0.00" oninput="onField(this);calcPmtTotal()" style="flex:1;min-width:120px">
+                </td>
+              </tr>
+              <tr>
+                <td>
+  Online Payment &nbsp;
+  <span title="Select a condition applicable to this online payment amount" style="cursor:help; display:inline-block; vertical-align:middle;">
+    
+  </span>
+</td>
+                <td style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <input type="number" step="0.01" data-k="pmt_online_payment" placeholder="0.00" oninput="onField(this);calcPmtTotal()" style="flex:1;min-width:120px">
+                </td>
+              </tr>
+              <tr>
+                <td>
+  Bank DO &nbsp;
+  <span title="Select a condition applicable to this bank DD amount" style="cursor:help; display:inline-block; vertical-align:middle;">
+    
+    
+  </span>
+</td>
+                <td style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <input type="number" step="0.01" data-k="pmt_bank_dd" placeholder="0.00" oninput="onField(this);calcPmtTotal()" style="flex:1;min-width:120px">
+                </td>
+              </tr>
+              <tr>
+                <td>
+  PO &nbsp;
+  <span title="Select a condition applicable to this PO amount" style="cursor:help; display:inline-block; vertical-align:middle;">
+    
+  </span>
+</td>
+                <td style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <input type="number" step="0.01" data-k="pmt_po" placeholder="0.00" oninput="onField(this);calcPmtTotal()" style="flex:1;min-width:120px">
+                </td>
+              </tr>
+              <tr>
+                <td>
+  Trade Value &nbsp;
+  <span title="Select a condition applicable to this trade value amount" style="cursor:help; display:inline-block; vertical-align:middle;">
+    
+  </span>
+</td>
+                <td style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <input type="number" step="0.01" data-k="pmt_trade_value" placeholder="0.00" oninput="onField(this);calcPmtTotal()" style="flex:1;min-width:120px">
+                </td>
+              </tr>
+              <tr>
+                <td>Refund</td>
+                <td><input type="number" step="0.01" data-k="pmt_refund" placeholder="0.00" oninput="onField(this);calcPmtTotal()"></td>
+              </tr>
+              <tr class="row-total">
+                <td>Total Amount Received (₹)</td>
+                <td id="pmt-total-received">₹0.00</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grand-bar received" style="margin-top:10px">
+          <div class="gl" id="calc-grand-rec-label">Balanced</div>
+          <div class="gv" id="calc-grand-rec">₹0.00</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="foot-actions">
+      <input type="file" id="excel-import-input" accept=".xlsx,.xls" style="display:none" onchange="importExcelFile(this.files[0])">
+      <button class="btn btn-outline" onclick="document.getElementById('excel-import-input').click()">📥 Import Excel</button>
+      <button class="btn btn-outline" onclick="exportCurrentToExcel()">📤 Export Excel</button>
+      <button class="btn btn-outline" onclick="printForm()">🖨 Print</button>
+      <button class="btn btn-dark" onclick="saveForm('draft')">💾 Save Draft</button>
+      <button class="btn btn-gold" onclick="saveForm('submitted')">✓ Submit Form</button>
+    </div>
+  </div><!-- /wrap -->
+</div><!-- /view-form -->
+
+
+<!-- ══════════════════════════════════════
+     ALL RECORDS VIEW
+══════════════════════════════════════ -->
+<div class="view" id="view-records">
+  <div class="rec-wrap">
+    <div class="rec-hdr">
+      <div>
+        <h2>All NDC Records</h2>
+        <div class="rec-hdr-sub">Complete list of all saved drafts and submitted No Dues Certificate forms</div>
+      </div>
+      <div class="rec-toolbar">
+        <input class="rec-search" id="rec-search" placeholder="Search name, VIN, model, ref…" oninput="filterRecords()">
+        <select class="rec-filter" id="rec-status-filter" onchange="filterRecords()">
+          <option value="">All Status</option>
+          <option value="draft">Draft</option>
+          <option value="submitted">Submitted</option>
+        </select>
+        <button class="btn btn-outline" onclick="exportAllRecordsToExcel()">📤 Export All to Excel</button>
+        <button class="btn btn-gold" onclick="newForm()">+ New NDC Form</button>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="kpi-row" id="rec-kpis"></div>
+
+    <!-- Records Table -->
+    <div class="rec-tbl-wrap">
+      <table class="rec-tbl">
+        <thead>
+          <tr>
+            <th>Ref No.</th>
+            <th>Customer</th>
+            <th>Model / VIN</th>
+            <th>Dealer</th>
+            <th>Delivery Date</th>
+            <th>Finance Type</th>
+            <th>Grand Total (₹)</th>
+            <th>Status</th>
+            <th style="width:130px">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="rec-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirm Modal -->
+<div class="overlay" id="del-overlay">
+  <div class="modal">
+    <h3>Delete NDC Record</h3>
+    <p>Are you sure you want to permanently delete this record? This action cannot be undone.</p>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeDelModal()">Cancel</button>
+      <button class="btn btn-danger" id="del-confirm-btn">Delete Record</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="js/script.js"></script>
+</body>
+</html>
